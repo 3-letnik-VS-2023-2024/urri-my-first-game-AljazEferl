@@ -19,11 +19,11 @@ import java.util.Iterator;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
-	private Texture img;
 	private Texture piratesShipImg;
 	private Texture rockImg;
 	private Texture treasureImg;
 	private Texture mapImg;
+	private Texture ammoImg;
 	private Texture background;
 	private  Sound  damageShip;
 	private Sound laughPirate;
@@ -33,19 +33,25 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Rectangle pirateShip;
 	private Array<Rectangle> rocks;
 	private Array<Rectangle> treasures;
+	private Array<Rectangle> ammos;
 	
 	private static final float PIRATE_SHIP_SPEED = 300f;
 	private static final float ROCK_SPEED = 150f;
 	private static final float ROCK_DAMAGE = 10f;
 	private static final float ROCK_SPAWN_TIME = 2f;
 
+	private static final float AMMO_SHOOT_INTERVAL = 1f;
+
+	private static final float AMMO_SPEED = 200f;
 	private static final float TREASURE_SPAWN_TIME = 4f;
 	private static final float TREASURE_SPEED = 100;
 
 	private int health;
 	private int treasureCollected;
+	private int rockHits;
 	private float treasureSpawnTime;
 	private float rockSpawnTime;
+	private float ammoshootTime;
 
 
 
@@ -58,6 +64,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		piratesShipImg = new Texture("images/piratesShip.png");
 		rockImg = new Texture("images/rock.png");
 		treasureImg = new Texture("images/treasure.png");
+		ammoImg = new Texture("images/ammo.png");
 
 		laughPirate = Gdx.audio.newSound(Gdx.files.internal("sounds/laugh.mp3"));
 		damageShip = Gdx.audio.newSound(Gdx.files.internal("sounds/damage.mp3"));
@@ -72,11 +79,14 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		treasures = new Array<>();
 		treasureCollected = 0;
+		rockHits = 0;
 		spawnTreasure();
 
 		rocks = new Array<>();
 		health = 100;
 		spawnRock();
+
+		ammos = new Array<>();
 	}
 
 
@@ -99,7 +109,10 @@ public class MyGdxGame extends ApplicationAdapter {
 	private void handleInput() {
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) moveLeft(Gdx.graphics.getDeltaTime());
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) moveRight(Gdx.graphics.getDeltaTime());
+		if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) shootAmmo();
 	}
+
+
 	private void moveLeft(float delta){
 		pirateShip.x -= PIRATE_SHIP_SPEED * delta;
 		if(pirateShip.x < 0){
@@ -108,7 +121,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 	private void moveRight(float delta){
 		pirateShip.x += PIRATE_SHIP_SPEED * delta;
-		if(pirateShip.x> Gdx.graphics.getWidth() - piratesShipImg.getWidth()-piratesShipImg.getWidth()){
+		if(pirateShip.x> Gdx.graphics.getWidth() - piratesShipImg.getWidth()){
 			pirateShip.x = Gdx.graphics.getWidth()-piratesShipImg.getWidth();
 		}
 	}
@@ -117,13 +130,15 @@ public class MyGdxGame extends ApplicationAdapter {
 		if (elapsedTime - treasureSpawnTime > TREASURE_SPAWN_TIME) spawnTreasure();
 		if (elapsedTime - rockSpawnTime > ROCK_SPAWN_TIME) spawnRock();
 
+		moveAmmo(delta);
+
 		for (Iterator<Rectangle> it = treasures.iterator(); it.hasNext(); ) {
-			Rectangle coin = it.next();
-			coin.y -= TREASURE_SPEED * delta;
-			if (coin.y + treasureImg.getHeight() < 0) {
+			Rectangle treasure = it.next();
+			treasure.y -= TREASURE_SPEED * delta;
+			if (treasure.y + treasureImg.getHeight() < 0) {
 				it.remove();
 			}
-			if (coin.overlaps(pirateShip)) {
+			if (treasure.overlaps(pirateShip)) {
 				treasureCollected++;
 				laughPirate.play();
 				it.remove();
@@ -131,12 +146,12 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
 
 		for (Iterator<Rectangle> it = rocks.iterator(); it.hasNext(); ) {
-			Rectangle hammer = it.next();
-			hammer.y -= ROCK_SPEED * delta;
-			if (hammer.y + rockImg.getHeight() < 0) {
+			Rectangle rock = it.next();
+			rock.y -= ROCK_SPEED * delta;
+			if (rock.y + rockImg.getHeight() < 0) {
 				it.remove();
 			}
-			if (hammer.overlaps(pirateShip)) {
+			if (rock.overlaps(pirateShip)) {
 				health -= ROCK_DAMAGE;
 				damageShip.play();
 				it.remove();
@@ -145,7 +160,8 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 	private void draw() {
 		if (health <= 0) {
-			font.setColor(Color.RED);
+			batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			font.setColor(Color.BLUE);
 			font.draw(batch,
 					"GAME OVER",
 					20f, Gdx.graphics.getHeight() - 20f
@@ -153,11 +169,14 @@ public class MyGdxGame extends ApplicationAdapter {
 			return;
 		}
 		batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		for (Rectangle coin : treasures) {
-			batch.draw(treasureImg, coin.x, coin.y);
+		for (Rectangle treasure : treasures) {
+			batch.draw(treasureImg, treasure.x, treasure.y);
 		}
-		for (Rectangle hammer : rocks) {
-			batch.draw(rockImg, hammer.x, hammer.y);
+		for (Rectangle rock : rocks) {
+			batch.draw(rockImg, rock.x, rock.y);
+		}
+		for(Rectangle ammo : ammos){
+			batch.draw(ammoImg, ammo.x,ammo.y,32,32);
 		}
 		batch.draw(piratesShipImg, pirateShip.x, pirateShip.y);
 
@@ -169,11 +188,53 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		font.setColor(Color.YELLOW);
 		font.draw(batch,
-				"SCORE: " + treasureCollected,
+				"SCORE: " + treasureCollected ,
 				20f, Gdx.graphics.getHeight() - 60f
 		);
+		font.setColor(Color.YELLOW);
+		font.draw(batch,
+				"HITS: " + rockHits,
+				20f, Gdx.graphics.getHeight() - 100f
+		);
+	}
+	private void shootAmmo() {
+		if (TimeUtils.timeSinceMillis((long) ammoshootTime) > AMMO_SHOOT_INTERVAL) {
+			Rectangle ammo = new Rectangle();
+
+			ammo.x = pirateShip.x + pirateShip.width / 2 - ammoImg.getWidth() / 2;
+
+			ammo.y = pirateShip.y + pirateShip.height;
+
+			ammo.width = ammoImg.getWidth();
+			ammo.height = ammoImg.getHeight();
+
+			ammos.add(ammo);
+			ammoshootTime = TimeUtils.millis();
+		}
 	}
 
+
+	private void moveAmmo(float delta) {
+		for (Iterator<Rectangle> it = ammos.iterator(); it.hasNext(); ) {
+			Rectangle ammo = it.next();
+			ammo.y += AMMO_SPEED * delta;
+			if (ammo.y > Gdx.graphics.getHeight()) {
+				it.remove();
+			}
+
+			for (int i = 0; i < rocks.size; i++) {
+				if (rocks.get(i).overlaps(ammo)) {
+					rocks.removeIndex(i);
+					rockHits++;
+				}
+			}
+			for(int i = 0; i<treasures.size; i++){
+				if(treasures.get(i).overlaps(ammo)){
+					it.remove();
+				}
+			}
+		}
+	}
 	private void spawnTreasure() {
 		Rectangle treasure = new Rectangle();
 		treasure.x = MathUtils.random(0f, Gdx.graphics.getWidth() - treasureImg.getWidth());
