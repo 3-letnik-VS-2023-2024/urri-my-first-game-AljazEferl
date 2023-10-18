@@ -22,7 +22,6 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Texture piratesShipImg;
 	private Texture rockImg;
 	private Texture treasureImg;
-	private Texture mapImg;
 	private Texture ammoImg;
 	private Texture background;
 	private  Sound  damageShip;
@@ -34,7 +33,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Array<Rectangle> rocks;
 	private Array<Rectangle> treasures;
 	private Array<Rectangle> ammos;
-	
+
 	private static final float PIRATE_SHIP_SPEED = 300f;
 	private static final float ROCK_SPEED = 150f;
 	private static final float ROCK_DAMAGE = 10f;
@@ -209,7 +208,6 @@ public class MyGdxGame extends ApplicationAdapter {
 			ammo.height = ammoImg.getHeight();
 
 			ammos.add(ammo);
-			ammoshootTime = TimeUtils.millis();
 		}
 	}
 
