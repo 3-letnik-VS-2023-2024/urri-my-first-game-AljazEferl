@@ -88,8 +88,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		ammos = new Array<>();
 	}
 
-
-
 	@Override
 	public void render () {
 		ScreenUtils.clear(1, 0, 0, 1);
