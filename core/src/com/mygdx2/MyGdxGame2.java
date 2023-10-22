@@ -28,6 +28,10 @@ public class MyGdxGame2 extends ApplicationAdapter {
     private int shipHealth = 100;
     private int treasuresCollected = 0 ;
     private  int hits = 0;
+    private float treasureSpawnTime;
+    private float rockSpawnTime;
+    private static final float TREASURE_SPAWN_TIME = 4f;
+    private static final float ROCK_SPAWN_TIME = 2f;
 
     float width, height;
     private static final float TREASURE_SPAWN_INTERVAL = 3f;
@@ -85,13 +89,13 @@ public class MyGdxGame2 extends ApplicationAdapter {
         timeSinceLastTreasureSpawn += Gdx.graphics.getDeltaTime();
         if (timeSinceLastTreasureSpawn >= TREASURE_SPAWN_INTERVAL) {
             spawnTreasure();
-            timeSinceLastTreasureSpawn = 0f; // Ponastavite časovnik
+            timeSinceLastTreasureSpawn = 0f;
         }
 
         timeSinceLastRockSpawn += Gdx.graphics.getDeltaTime();
         if (timeSinceLastRockSpawn >= ROCK_SPAWN_INTERVAL) {
             spawnRock();
-            timeSinceLastRockSpawn = 0f; // Ponastavite časovnik
+            timeSinceLastRockSpawn = 0f;
         }
 
       batch.end();
@@ -127,7 +131,6 @@ public class MyGdxGame2 extends ApplicationAdapter {
                 pirateShip.getAmmoList().removeIndex(i);
             }
 
-            // Check for collisions between ammunition and rocks
             for (int j = dynamicobjects.size - 1; j >= 0; j--) {
                 DynamicGameObject object2 = dynamicobjects.get(j);
                 if (object2 instanceof Rock && Intersector.overlaps(ammo.rectangleBounds(), ((Rock) object2).rectangleBounds())) {

@@ -28,8 +28,6 @@ public class Treasure  extends DynamicGameObject {
     @Override
     public void update(float deltaTime) {
         position.y -= velocity.y * deltaTime;
-        if (position.y + bounds.getHeight() < 0) {
-        }
     }
 
 }

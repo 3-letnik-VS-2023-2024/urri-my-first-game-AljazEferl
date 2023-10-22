@@ -25,7 +25,5 @@ public class Rock extends DynamicGameObject{
     public void update(float deltaTime){
         super.update(deltaTime);
         position.y -= velocity.y * deltaTime;
-        if (position.y + bounds.getHeight() < 0) {}
-
     }
 }

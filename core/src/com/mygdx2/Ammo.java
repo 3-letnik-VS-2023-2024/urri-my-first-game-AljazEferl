@@ -21,7 +21,6 @@ public class Ammo  extends DynamicGameObject{
     }
 
     public Rectangle rectangleBounds(){
-        return new Rectangle(position.x,position.y,bounds.width *2,bounds.height*2);
-
+        return new Rectangle(position.x,position.y,bounds.width ,bounds.height);
     }
 }

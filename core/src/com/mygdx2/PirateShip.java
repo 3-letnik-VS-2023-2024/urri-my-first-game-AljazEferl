@@ -30,7 +30,7 @@ public class PirateShip extends DynamicGameObject {
             position.x = (float) (Gdx.graphics.getWidth() - bounds.getWidth());
     }
     public void shootAmmo(float delta){
-        Ammo ammo = new Ammo(position.x + bounds.width / 2, position.y + bounds.height, 20, 35, new Vector2(0, AMMO_SPEED), TimeUtils.nanoTime());
+        Ammo ammo = new Ammo(position.x + bounds.width /2 - Assets.ammoImg.getWidth()/4, position.y + bounds.height, Assets.ammoImg.getWidth(), Assets.ammoImg.getHeight(), new Vector2(0, AMMO_SPEED), TimeUtils.nanoTime());
         ammoList.add(ammo);
 
     }
