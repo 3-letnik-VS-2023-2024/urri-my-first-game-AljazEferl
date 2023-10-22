@@ -14,7 +14,7 @@ public class Score extends GameObject {
 
     @Override
     public void render(SpriteBatch batch){
-        Assets.font.setColor(Color.YELLOW);
+        Assets.font.setColor(Color.BLACK);
         Assets.font.draw(batch,
                 "SCORE: " + PirateShip.getTreasureCollected() ,
                 20f, Gdx.graphics.getHeight() - 60f

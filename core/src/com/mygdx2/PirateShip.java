@@ -5,14 +5,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class PirateShip extends DynamicGameObject {
     private static  int health = 100;
     private static  int treasureCollected = 0;
     private static  int rockHits = 0;
-
+    private static final float AMMO_SPEED = 300f;
+    private Array<Ammo> ammoList;
     public PirateShip(float x, float y, float width, float height, Vector2 velocity, long createTime) {
         super(x, y, width, height, velocity, createTime);
+        ammoList = new Array<Ammo>();
     }
 
     public void moveLeft(float delta){
@@ -25,6 +29,15 @@ public class PirateShip extends DynamicGameObject {
         if (position.x > Gdx.graphics.getWidth() - bounds.getWidth())
             position.x = (float) (Gdx.graphics.getWidth() - bounds.getWidth());
     }
+    public void shootAmmo(float delta){
+        Ammo ammo = new Ammo(position.x + bounds.width / 2, position.y + bounds.height, 20, 35, new Vector2(0, AMMO_SPEED), TimeUtils.nanoTime());
+        ammoList.add(ammo);
+
+    }
+    public Array<Ammo> getAmmoList() {
+        return ammoList;
+    }
+
     public static int getRockHits(){
         return rockHits;
     }

@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import java.util.Iterator;
+
 public class MyGdxGame2 extends ApplicationAdapter {
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -25,6 +27,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
     private RockHits rockHits;
     private int shipHealth = 100;
     private int treasuresCollected = 0 ;
+    private  int hits = 0;
 
     float width, height;
     private static final float TREASURE_SPAWN_INTERVAL = 3f;
@@ -49,6 +52,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
         health = new Health(10f,Gdx.graphics.getHeight()-10f,100,30,shipHealth);
         score = new Score(10f,Gdx.graphics.getHeight()-60f,100,30,treasuresCollected);
         gameOver = new GameOver(10f,Gdx.graphics.getHeight()-20f,100,30);
+        rockHits = new RockHits(10f, Gdx.graphics.getHeight() -100f,100,30,hits);
 
         spawnTreasure();
         spawnRock();
@@ -64,7 +68,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
     private void handleInput() {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) pirateShip.moveLeft(Gdx.graphics.getDeltaTime());
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) pirateShip.moveRight(Gdx.graphics.getDeltaTime());
-      //  if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) pirateShip.shootAmmo();
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) pirateShip.shootAmmo(Gdx.graphics.getDeltaTime());
     }
     @Override
     public void render() {
@@ -96,25 +100,46 @@ public class MyGdxGame2 extends ApplicationAdapter {
         for (DynamicGameObject object : dynamicobjects) {
             object.update(delta);
             if (object instanceof Rock) {
-                Rock Rock = (Rock) object;
-                if (Intersector.overlaps(pirateShip.rectangleBounds(), Rock.rectangleBounds())) {
+                Rock rock = (Rock) object;
+                if (Intersector.overlaps(pirateShip.rectangleBounds(), rock.rectangleBounds())) {
                     Assets.playSound(Assets.damageShip);
                     shipHealth -= 10;
 
-                    dynamicobjects.removeValue(Rock, true);
+                    dynamicobjects.removeValue(rock, true);
                     pirateShip.setHealth(shipHealth);
                 }
             } else if (object instanceof Treasure) {
-                Treasure human = (Treasure) object;
-                if (Intersector.overlaps(pirateShip.rectangleBounds(), human.rectangleBounds())) {
+                Treasure treasure1 = (Treasure) object;
+                if (Intersector.overlaps(pirateShip.rectangleBounds(), treasure1.rectangleBounds())) {
                     Assets.playSound(Assets.laughPirate);
                     treasuresCollected++;
-                    dynamicobjects.removeValue(human, true);
+                    dynamicobjects.removeValue(treasure1, true);
                     pirateShip.setTreasureCollected(treasuresCollected);
                 }
             }
+        }
 
+        for (int i = pirateShip.getAmmoList().size - 1; i >= 0; i--) {
+            Ammo ammo = pirateShip.getAmmoList().get(i);
+            ammo.update(delta);
 
+            if (ammo.position.y > Gdx.graphics.getHeight()) {
+                pirateShip.getAmmoList().removeIndex(i);
+            }
+
+            // Check for collisions between ammunition and rocks
+            for (int j = dynamicobjects.size - 1; j >= 0; j--) {
+                DynamicGameObject object2 = dynamicobjects.get(j);
+                if (object2 instanceof Rock && Intersector.overlaps(ammo.rectangleBounds(), ((Rock) object2).rectangleBounds())) {
+                    dynamicobjects.removeIndex(j);
+                    pirateShip.getAmmoList().removeIndex(i);
+                    hits++;
+                    pirateShip.setRockHits(hits);
+                }
+                else if(object2 instanceof  Treasure && Intersector.overlaps(ammo.rectangleBounds(),((Treasure)object2).rectangleBounds())){
+                    pirateShip.getAmmoList().removeIndex(i);
+                }
+            }
         }
     }
 
@@ -128,16 +153,19 @@ public class MyGdxGame2 extends ApplicationAdapter {
         for(DynamicGameObject object : dynamicobjects){
             object.render(batch);
         }
+        for (Ammo ammo : pirateShip.getAmmoList()) {
+            ammo.render(batch);
+        }
         pirateShip.render(batch);
 
         health.render(batch);
         score.render(batch);
-      //  rockHits.render(batch);
+        rockHits.render(batch);
     }
 
 
     @Override
     public void dispose() {
-        super.dispose();
+        Assets.dispose();
     }
 }

@@ -14,7 +14,7 @@ public class RockHits extends GameObject {
 
     @Override
     public void render(SpriteBatch batch){
-        Assets.font.setColor(Color.YELLOW);
+        Assets.font.setColor(Color.BLACK);
         Assets.font.draw(batch,
                 "HITS: " + PirateShip.getRockHits(),
                 20f, Gdx.graphics.getHeight() - 100f
