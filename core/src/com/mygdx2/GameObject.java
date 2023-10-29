@@ -16,6 +16,5 @@ public abstract class GameObject {
         this.position = new Vector2(x,y);
         this.bounds = new Rectangle(x,y,width,height);
     }
-    public void render(SpriteBatch batch) {
-    }
+    public abstract  void render(SpriteBatch batch);
 }

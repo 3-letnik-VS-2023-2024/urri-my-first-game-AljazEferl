@@ -14,11 +14,7 @@ public abstract class DynamicGameObject extends GameObject{
         this.createTime = createTime;
     }
 
-    public  void render(SpriteBatch batch){
+    public  abstract void render(SpriteBatch batch);
 
-    }
-
-    public void update(float deltaTime) {
-
-    }
+    public abstract void update(float deltaTime);
 }

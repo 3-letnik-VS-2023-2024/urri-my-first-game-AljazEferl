@@ -46,6 +46,4 @@ public class Assets{
         laughPirate.dispose();
         damageShip.dispose();
     }
-
-
 }

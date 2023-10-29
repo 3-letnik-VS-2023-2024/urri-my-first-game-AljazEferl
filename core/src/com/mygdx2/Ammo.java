@@ -10,7 +10,7 @@ public class Ammo  extends DynamicGameObject{
     }
     @Override
     public void render(SpriteBatch batch) {
-        super.render(batch);
+        //super.render(batch);
         batch.draw(Assets.ammoImg, position.x, position.y, bounds.width, bounds.height);
     }
 

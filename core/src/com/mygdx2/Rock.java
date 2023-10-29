@@ -18,12 +18,12 @@ public class Rock extends DynamicGameObject{
 
     @Override
     public void render(SpriteBatch batch) {
-        super.render(batch);
+    //    super.render(batch);
         batch.draw(Assets.rockImg, position.x, position.y, bounds.width, bounds.height);
     }
     @Override
     public void update(float deltaTime){
-        super.update(deltaTime);
+
         position.y -= velocity.y * deltaTime;
     }
 }

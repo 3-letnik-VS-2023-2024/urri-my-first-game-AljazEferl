@@ -17,7 +17,7 @@ public class Health extends GameObject {
     public void render(SpriteBatch batch){
         Assets.font.setColor(Color.BLACK);
         Assets.font.draw(batch,
-                "HEALTH: " + PirateShip.getHealth(),
+                "HEALTH: " + "PirateShip.getHealth()",
                 20f, Gdx.graphics.getHeight() - 20f
         );
     }

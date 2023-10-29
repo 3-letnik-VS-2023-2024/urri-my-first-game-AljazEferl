@@ -16,7 +16,7 @@ public class Treasure  extends DynamicGameObject {
 
     @Override
     public void render(SpriteBatch batch) {
-        super.render(batch);
+      //  super.render(batch);
         batch.draw(Assets.treasureImg, position.x, position.y, bounds.width, bounds.height);
     }
     public Rectangle rectangleBounds(){
@@ -29,5 +29,4 @@ public class Treasure  extends DynamicGameObject {
     public void update(float deltaTime) {
         position.y -= velocity.y * deltaTime;
     }
-
 }

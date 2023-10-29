@@ -20,18 +20,11 @@ public class MyGdxGame2 extends ApplicationAdapter {
     private PirateShip pirateShip;
     private Treasure treasure;
     private Rock rock;
+    private GameScore gameScore;
     private Array<DynamicGameObject> dynamicobjects;
-    private Health health;
     private GameOver gameOver;
-    private Score score;
-    private RockHits rockHits;
-    private int shipHealth = 100;
-    private int treasuresCollected = 0 ;
-    private  int hits = 0;
-    private float treasureSpawnTime;
-    private float rockSpawnTime;
-    private static final float TREASURE_SPAWN_TIME = 4f;
-    private static final float ROCK_SPAWN_TIME = 2f;
+    private static final int TREASURE_SPAWN_TIME = 4;
+    private static final int  ROCK_SPAWN_TIME = 2;
 
     float width, height;
     private static final float TREASURE_SPAWN_INTERVAL = 3f;
@@ -46,27 +39,22 @@ public class MyGdxGame2 extends ApplicationAdapter {
         Assets.load();
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
-        score = new Score(0,0,width,height,PirateShip.getTreasureCollected());
-        gameOver = new GameOver(0,0,width,height);
+
         batch = new SpriteBatch();
 
-        pirateShip = new PirateShip(Gdx.graphics.getWidth() / 2f - Assets.piratesShipImg.getWidth() / 2f, 20f,Assets.piratesShipImg.getWidth(),Assets.piratesShipImg.getHeight(),new Vector2(250, 250f),0 );
+        pirateShip = new PirateShip(Gdx.graphics.getWidth() / 2f - Assets.piratesShipImg.getWidth() / 2f, 20f,Assets.piratesShipImg.getWidth(),Assets.piratesShipImg.getHeight(),new Vector2(250, 0),0 );
         dynamicobjects = new Array<DynamicGameObject>();
-
-        health = new Health(10f,Gdx.graphics.getHeight()-10f,100,30,shipHealth);
-        score = new Score(10f,Gdx.graphics.getHeight()-60f,100,30,treasuresCollected);
-        gameOver = new GameOver(10f,Gdx.graphics.getHeight()-20f,100,30);
-        rockHits = new RockHits(10f, Gdx.graphics.getHeight() -100f,100,30,hits);
-
+        gameOver = new GameOver(0,0, width,height);//(10f,Gdx.graphics.getHeight()-20f,100,30);
+        gameScore = new GameScore(0,0, width,height, 0, 100,0);
         spawnTreasure();
         spawnRock();
     }
     private void spawnTreasure() {
-        dynamicobjects.add(treasure = new Treasure(MathUtils.random(0f, Gdx.graphics.getWidth() - Assets.treasureImg.getWidth()),Gdx.graphics.getHeight(),Assets.treasureImg.getWidth(),Assets.treasureImg.getHeight(),new Vector2(0f, 100f),4));
+        dynamicobjects.add(new Treasure(MathUtils.random(0f, Gdx.graphics.getWidth() - Assets.treasureImg.getWidth()),Gdx.graphics.getHeight(),Assets.treasureImg.getWidth(),Assets.treasureImg.getHeight(),new Vector2(0f, 100f),TREASURE_SPAWN_TIME));
 
     }
     private void spawnRock() {
-        dynamicobjects.add(rock = new Rock(MathUtils.random(0f, Gdx.graphics.getWidth() - Assets.rockImg.getWidth()),Gdx.graphics.getHeight(),Assets.rockImg.getWidth(),Assets.rockImg.getHeight(),new Vector2(0f, 150f),4));
+        dynamicobjects.add(new Rock(MathUtils.random(0f, Gdx.graphics.getWidth() - Assets.rockImg.getWidth()),Gdx.graphics.getHeight(),Assets.rockImg.getWidth(),Assets.rockImg.getHeight(),new Vector2(0f, 150f),ROCK_SPAWN_TIME));
 
     }
     private void handleInput() {
@@ -77,10 +65,11 @@ public class MyGdxGame2 extends ApplicationAdapter {
     @Override
     public void render() {
 
-      if(shipHealth > 0) {
+      if(gameScore.getShipHealth() > 0) {
 
           handleInput();
           update(Gdx.graphics.getDeltaTime());
+          pirateShip.update(Gdx.graphics.getDeltaTime());
       }
 
       batch.begin();
@@ -107,18 +96,15 @@ public class MyGdxGame2 extends ApplicationAdapter {
                 Rock rock = (Rock) object;
                 if (Intersector.overlaps(pirateShip.rectangleBounds(), rock.rectangleBounds())) {
                     Assets.playSound(Assets.damageShip);
-                    shipHealth -= 10;
-
+                    gameScore.setShipHealth(gameScore.getShipHealth()-10);
                     dynamicobjects.removeValue(rock, true);
-                    pirateShip.setHealth(shipHealth);
                 }
             } else if (object instanceof Treasure) {
                 Treasure treasure1 = (Treasure) object;
                 if (Intersector.overlaps(pirateShip.rectangleBounds(), treasure1.rectangleBounds())) {
                     Assets.playSound(Assets.laughPirate);
-                    treasuresCollected++;
+                    gameScore.setScore(gameScore.getScore() + 1);
                     dynamicobjects.removeValue(treasure1, true);
-                    pirateShip.setTreasureCollected(treasuresCollected);
                 }
             }
         }
@@ -136,8 +122,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
                 if (object2 instanceof Rock && Intersector.overlaps(ammo.rectangleBounds(), ((Rock) object2).rectangleBounds())) {
                     dynamicobjects.removeIndex(j);
                     pirateShip.getAmmoList().removeIndex(i);
-                    hits++;
-                    pirateShip.setRockHits(hits);
+                    gameScore.setRockHits(gameScore.getRockHits()+1);
                 }
                 else if(object2 instanceof  Treasure && Intersector.overlaps(ammo.rectangleBounds(),((Treasure)object2).rectangleBounds())){
                     pirateShip.getAmmoList().removeIndex(i);
@@ -148,7 +133,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
 
     public void draw(){
         batch.draw(Assets.background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        if(shipHealth <= 0){
+        if(gameScore.getShipHealth() <= 0){
             gameOver.render(batch);
             return;
         }
@@ -160,10 +145,8 @@ public class MyGdxGame2 extends ApplicationAdapter {
             ammo.render(batch);
         }
         pirateShip.render(batch);
-
-        health.render(batch);
-        score.render(batch);
-        rockHits.render(batch);
+        gameScore.render(batch);
+       // rockHits.render(batch);
     }
 
 
