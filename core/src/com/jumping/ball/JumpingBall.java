@@ -42,7 +42,8 @@ public class JumpingBall extends ApplicationAdapter {
     }
 
     private void spawnBall(float x, float y) {
-        Ball ball = new Ball(x, y, getRandomColor());
+        float radius = MathUtils.random(10, 30);
+        Ball ball = new Ball(x, y, getRandomColor(),radius);
         balls.add(ball);
     }
     @Override

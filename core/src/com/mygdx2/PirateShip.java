@@ -8,18 +8,19 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
+
+
 public class PirateShip extends DynamicGameObject {
-    private int health = 100;
-    private int treasureCollected = 0;
-    private int rockHits = 0;
+
     private final float AMMO_SPEED = 300f;
     private Array<Ammo> ammoList;
+    private Array<Ammo> activeAmmo;
     private Array<DynamicGameObject> dynamicGameObjectArray;
     private Movement movement;
 
     public PirateShip(float x, float y, float width, float height, Vector2 velocity, long createTime) {
         super(x, y, width, height, velocity, createTime);
-        ammoList = new Array<Ammo>();
+        activeAmmo = new Array<Ammo>();
     }
 
     public enum Movement {
@@ -46,33 +47,8 @@ public class PirateShip extends DynamicGameObject {
         ammoList.add(ammo);*/
 
     }
-
     public Array<Ammo> getAmmoList() {
-        return ammoList;
-    }
-
-    public int getRockHits() {
-        return rockHits;
-    }
-
-    public void setRockHits(int rockHits) {
-        this.rockHits = rockHits;
-    }
-
-    public int getTreasureCollected() {
-        return treasureCollected;
-    }
-
-    public void setTreasureCollected(int treasureCollected) {
-        this.treasureCollected = treasureCollected;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
+        return activeAmmo;
     }
 
     @Override
@@ -101,11 +77,21 @@ public class PirateShip extends DynamicGameObject {
             movement = Movement.END;
         }
         else if(movement == Movement.UP){
-            Ammo ammo = new Ammo(position.x + bounds.width / 2 - Assets.ammoImg.getWidth() / 4, position.y + bounds.height, Assets.ammoImg.getWidth(), Assets.ammoImg.getHeight(), new Vector2(0, AMMO_SPEED), TimeUtils.nanoTime());
-            ammoList.add(ammo);
+           // Ammo ammo = new Ammo(position.x + bounds.width / 2 - Assets.ammoImg.getWidth() / 4, position.y + bounds.height, Assets.ammoImg.getWidth(), Assets.ammoImg.getHeight(), new Vector2(0, AMMO_SPEED), TimeUtils.nanoTime());
+            //ammoList.add(ammo);
+            Ammo ammo = Ammo.POOL_AMMO.obtain();
+            ammo.init(position.x + bounds.width / 2 - Assets.ammoImg.getWidth() / 4,
+                    position.y + bounds.height,
+                    Assets.ammoImg.getWidth(), Assets.ammoImg.getHeight(),
+                    new Vector2(0, AMMO_SPEED), TimeUtils.nanoTime());
+            activeAmmo.add(ammo);
             movement = Movement.END;
         }
-
-
     }
+    public void reset() {
+        position.set(Gdx.graphics.getWidth() / 2f - Assets.piratesShipImg.getWidth() / 2f, 20f);
+        velocity.set(250, 0);
+        activeAmmo.clear();
+    }
+
 }

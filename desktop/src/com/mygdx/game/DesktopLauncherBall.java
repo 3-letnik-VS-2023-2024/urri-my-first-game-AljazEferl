@@ -15,5 +15,4 @@ public class DesktopLauncherBall {
         new Lwjgl3Application(new JumpingBall(), config);
 
     }
-
 }

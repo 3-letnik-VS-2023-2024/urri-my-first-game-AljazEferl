@@ -7,37 +7,33 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class Ball {
-    private static final float RADIUS = 20;
-    private static final float GRAVITY = -1500;
+    private static final float GRAVITY = -2000;
 
     private Vector2 position;
+    private float radius;
     private Vector2 velocity;
     private Color color;
-
-    public Ball(float x, float y, Color color) {
+    private static final float RESTITUTION = 0.8f;
+    public Ball(float x, float y, Color color,float radius) {
         this.position = new Vector2(x, y);
         this.velocity = new Vector2(MathUtils.random(-200, 200), MathUtils.random(200, 400));
         this.color = color;
+        this.radius = radius;
     }
 
     public void update(float deltaTime) {
         velocity.y += GRAVITY * deltaTime;
-        position.x += velocity.x * deltaTime;
         position.y += velocity.y * deltaTime;
 
-        // Bounce off the walls
-        if (position.x - RADIUS < 0 || position.x + RADIUS > Gdx.graphics.getWidth()) {
-            velocity.x = -velocity.x;
-        }
 
-        if (position.y - RADIUS < 0) {
-            velocity.y = -velocity.y;
-            position.y = RADIUS;
+        if (position.y - radius < 0) {
+            velocity.y = -velocity.y * RESTITUTION;
+            position.y = radius;
         }
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(color);
-        shapeRenderer.circle(position.x, position.y, RADIUS);
+        shapeRenderer.circle(position.x, position.y, radius);
     }
 }

@@ -15,6 +15,7 @@ public class Assets{
     public static Sound damageShip;
     public static Sound laughPirate;
     public static BitmapFont font;
+    public static Texture powerUpImg;
 
     public static Texture loadTexture (String file) {
         return new Texture(Gdx.files.internal(file));
@@ -26,6 +27,7 @@ public class Assets{
         rockImg = loadTexture("images/rock.png");
         treasureImg = loadTexture("images/treasure.png");
         ammoImg = loadTexture("images/ammo.png");
+        powerUpImg = loadTexture("images/shield.png");
         font = new BitmapFont(Gdx.files.internal("fonts/arial-32.fnt"));
         laughPirate = Gdx.audio.newSound(Gdx.files.internal("sounds/laugh.mp3"));
         damageShip = Gdx.audio.newSound(Gdx.files.internal("sounds/damage.mp3"));
@@ -42,6 +44,7 @@ public class Assets{
         rockImg.dispose();
         treasureImg.dispose();
         ammoImg.dispose();
+        powerUpImg.dispose();
         font.dispose();
         laughPirate.dispose();
         damageShip.dispose();

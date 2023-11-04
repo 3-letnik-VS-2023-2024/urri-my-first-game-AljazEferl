@@ -47,5 +47,10 @@ public class GameScore extends GameObject {
         }
         return false;
     }
+    public void reset(){
+        setScore(0);
+        setShipHealth(100);
+        setRockHits(0);
+    }
 
 }
