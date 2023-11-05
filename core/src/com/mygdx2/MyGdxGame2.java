@@ -44,9 +44,9 @@ public class MyGdxGame2 extends ApplicationAdapter {
     private final Array<Treasure> activeTreasures = new Array<Treasure>();
     private final Array<Rock> activeRocks = new Array<Rock>();
     private final Array<Shield> activeShield = new Array<Shield>();
-    private static final int AMMO_POOL_SIZE = 20;
+    //private static final int AMMO_POOL_SIZE = 20;
 
-    private final Array<Ammo> activeAmmo = new Array<Ammo>();
+    //private final Array<Ammo> activeAmmo = new Array<Ammo>();
 
 
 
@@ -58,7 +58,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
         pirateShip = new PirateShip(Gdx.graphics.getWidth() / 2f - Assets.piratesShipImg.getWidth() / 2f, 20f,Assets.piratesShipImg.getWidth(),Assets.piratesShipImg.getHeight(),new Vector2(250, 0),0 );
-        dynamicobjects = new Array<DynamicGameObject>();
+      //  dynamicobjects = new Array<DynamicGameObject>();
         gameOver = new GameOver(0,0, width,height);//(10f,Gdx.graphics.getHeight()-20f,100,30);
         gameScore = new GameScore(0,0, width,height, 0, 100,0);
         spawnTreasure();
@@ -94,9 +94,14 @@ public class MyGdxGame2 extends ApplicationAdapter {
     }
 
     private void handleInput() {
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) pirateShip.moveLeft(Gdx.graphics.getDeltaTime());
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) pirateShip.moveRight(Gdx.graphics.getDeltaTime());
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) pirateShip.shootAmmo(Gdx.graphics.getDeltaTime());
+        if(!isGamePaused) {
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+                pirateShip.moveLeft(Gdx.graphics.getDeltaTime());
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+                pirateShip.moveRight(Gdx.graphics.getDeltaTime());
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
+                pirateShip.shootAmmo(Gdx.graphics.getDeltaTime());
+        }
         if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
             isGamePaused = !isGamePaused;
         }
@@ -125,7 +130,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
     }
 
     private void drawPauseScreen() {
-        float x = Gdx.graphics.getWidth() / 2f;
+        float x = Gdx.graphics.getWidth() / 2f - 70;
         float y = Gdx.graphics.getHeight() / 2f;
 
         Assets.font.draw(batch, "PAUSED", x, y);
