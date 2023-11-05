@@ -37,6 +37,8 @@ public class MyGdxGame2 extends ApplicationAdapter {
     private float remainingShieldTime = 0f;
 
     private boolean isGamePaused = false;
+    private int obtainedAmmoCount = 0;
+
 
     private boolean hasShield = false;
     private final Array<Treasure> activeTreasures = new Array<Treasure>();
@@ -55,9 +57,6 @@ public class MyGdxGame2 extends ApplicationAdapter {
         Assets.load();
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
-
-        batch = new SpriteBatch();
-
         pirateShip = new PirateShip(Gdx.graphics.getWidth() / 2f - Assets.piratesShipImg.getWidth() / 2f, 20f,Assets.piratesShipImg.getWidth(),Assets.piratesShipImg.getHeight(),new Vector2(250, 0),0 );
         dynamicobjects = new Array<DynamicGameObject>();
         gameOver = new GameOver(0,0, width,height);//(10f,Gdx.graphics.getHeight()-20f,100,30);
@@ -168,6 +167,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
             pool.update(delta);
             if(!pool.isAlive()){
                 activeTreasures.removeValue(pool,true);
+                pool.free();
             }
             if(pirateShip.rectangleBounds().overlaps(pool.rectangleBounds())){
                 gameScore.setScore(gameScore.getScore()+1);
@@ -182,22 +182,24 @@ public class MyGdxGame2 extends ApplicationAdapter {
             pool.update(delta);
             if(!pool.isAlive()){
                 activeRocks.removeValue(pool,true);
+                pool.free();
             }
             if(pirateShip.rectangleBounds().overlaps(pool.rectangleBounds())){
                 if (!hasShield) {
                     gameScore.setShipHealth(gameScore.getShipHealth() - 10);
                     Assets.playSound(Assets.damageShip);
+                    pool.free();
                 }
                 activeRocks.removeValue(pool, true);
                 pool.free();
             }
-
         }
 
         for(Shield pool : activeShield){
             pool.update(delta);
             if(!pool.isAlive()){
                 activeShield.removeValue(pool,true);
+                pool.free();
             }
             if(pirateShip.rectangleBounds().overlaps(pool.rectangleBounds())){
                 Shield shield1 = pool;
@@ -207,6 +209,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
                 pool.free();
                 if (shield1.getDuration() <= 0) {
                     hasShield = false;
+                    pool.free();
                 }
             }
 
@@ -219,11 +222,14 @@ public class MyGdxGame2 extends ApplicationAdapter {
                     activeRocks.removeValue(rock, true);
                     ammo.free();
                     rock.free();
+                    obtainedAmmoCount++;
                 }
             }
 
             if (!ammo.isAlive()) {
                 pirateShip.getAmmoList().removeValue(ammo, true);
+                ammo.free();
+                obtainedAmmoCount++;
             }
 
         }
@@ -234,15 +240,25 @@ public class MyGdxGame2 extends ApplicationAdapter {
         gameScore.reset();
         pirateShip.reset();
 
+        for (Treasure treasure : activeTreasures) {
+            treasure.free();
+        }
         activeTreasures.clear();
+
+        for (Rock rock : activeRocks) {
+            rock.free();
+        }
         activeRocks.clear();
+
+        for (Shield shield : activeShield) {
+            shield.free();
+        }
         activeShield.clear();
+
 
         hasShield = false;
         remainingShieldTime = 0f;
 
-        spawnRock();
-        spawnTreasure();
     }
 
 
@@ -256,12 +272,6 @@ public class MyGdxGame2 extends ApplicationAdapter {
             return;
         }
 
-      /*  for(DynamicGameObject object : dynamicobjects){
-            object.render(batch);
-        }*/
-      /*  for (Ammo ammo : pirateShip.getAmmoList()) {
-            ammo.render(batch);
-        }*/
         for (Ammo ammo : pirateShip.getAmmoList()) {
             ammo.render(batch);
         }
@@ -283,8 +293,12 @@ public class MyGdxGame2 extends ApplicationAdapter {
 
             Assets.font.draw(batch, "SHIELD: " + String.format("%.1f", remainingShieldTime), x, y);
         }
-       // Assets.font.draw(batch,"POOL"+ activeTreasures.)
+        float textX = 10f;
+        float textY = Gdx.graphics.getHeight() - 160f;
 
+        Assets.font.draw(batch, "Active Ammo: " + pirateShip.getAmmoList().size, textX, textY);
+        Assets.font.draw(batch, "Ammo in Pool: " + Ammo.POOL_AMMO.getFree(), textX, textY - 20f);
+        Assets.font.draw(batch, "Obtained Ammo: " + obtainedAmmoCount, textX, textY - 40);
     }
 
 

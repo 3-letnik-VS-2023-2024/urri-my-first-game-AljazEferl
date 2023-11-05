@@ -13,9 +13,9 @@ import com.badlogic.gdx.utils.TimeUtils;
 public class PirateShip extends DynamicGameObject {
 
     private final float AMMO_SPEED = 300f;
-    private Array<Ammo> ammoList;
+
     private Array<Ammo> activeAmmo;
-    private Array<DynamicGameObject> dynamicGameObjectArray;
+  //  private Array<DynamicGameObject> dynamicGameObjectArray;
     private Movement movement;
 
     public PirateShip(float x, float y, float width, float height, Vector2 velocity, long createTime) {

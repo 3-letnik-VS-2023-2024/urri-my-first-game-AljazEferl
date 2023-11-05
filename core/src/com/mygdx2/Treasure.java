@@ -19,7 +19,7 @@ public class Treasure  extends DynamicGameObject implements Pool.Poolable{
     }*/
 
     public static final Pool<Treasure> POOL_TREASURE =
-            Pools.get(Treasure.class, 50);
+            Pools.get(Treasure.class, 5);
     public Treasure() {
         alive = false;
 
