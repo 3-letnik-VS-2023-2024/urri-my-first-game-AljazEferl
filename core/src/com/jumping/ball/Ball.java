@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class Ball {
-    private static final float GRAVITY = -2000;
+    private static final float GRAVITY = -1500;
 
     private Vector2 position;
     private float radius;
