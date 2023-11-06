@@ -193,7 +193,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
                 if (!hasShield) {
                     gameScore.setShipHealth(gameScore.getShipHealth() - 10);
                     Assets.playSound(Assets.damageShip);
-                    pool.free();
+                   // pool.free();
                 }
                 activeRocks.removeValue(pool, true);
                 pool.free();
@@ -214,7 +214,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
                 pool.free();
                 if (shield1.getDuration() <= 0) {
                     hasShield = false;
-                    pool.free();
+                   // pool.free();
                 }
             }
 
