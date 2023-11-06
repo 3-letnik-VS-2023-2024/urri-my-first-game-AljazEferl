@@ -91,7 +91,10 @@ public class PirateShip extends DynamicGameObject {
     public void reset() {
         position.set(Gdx.graphics.getWidth() / 2f - Assets.piratesShipImg.getWidth() / 2f, 20f);
         velocity.set(250, 0);
+        for(Ammo ammo1 : activeAmmo){
+            ammo1.free();
+        }
         activeAmmo.clear();
-    }
+            }
 
 }
