@@ -54,7 +54,7 @@ public class PirateShip extends DynamicGameObject {
     @Override
     public void render(SpriteBatch batch) {
         //   super.render(batch);
-        batch.draw(Assets.piratesShipImg, position.x, position.y, bounds.width + 20, bounds.height + 20);
+        batch.draw(Assets.piratesShipImg, position.x, position.y, bounds.width, bounds.height);
     }
 
     public Rectangle rectangleBounds() {

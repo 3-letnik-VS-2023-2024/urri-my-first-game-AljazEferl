@@ -3,8 +3,12 @@ package com.mygdx2;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -12,8 +16,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
-
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx2.debug.DebugCameraController;
+import com.mygdx2.debug.MemoryInfo;
+import com.mygdx2.util.ViewportUtils;
 import java.util.Iterator;
 
 public class MyGdxGame2 extends ApplicationAdapter {
@@ -48,15 +57,33 @@ public class MyGdxGame2 extends ApplicationAdapter {
 
     //private final Array<Ammo> activeAmmo = new Array<Ammo>();
 
-
+    private DebugCameraController debugCameraController;
+    private MemoryInfo memoryInfo;
+    private boolean debug = false;
+    private ShapeRenderer shapeRenderer;
+    public Viewport viewport;
 
 
     @Override
     public void create() {
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch = new SpriteBatch();
         Assets.load();
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
+
+        //debug
+
+        debugCameraController = new DebugCameraController();
+        debugCameraController.setStartPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
+        memoryInfo = new MemoryInfo(500);
+
+        shapeRenderer = new ShapeRenderer();
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+
+
+
         pirateShip = new PirateShip(Gdx.graphics.getWidth() / 2f - Assets.piratesShipImg.getWidth() / 2f, 20f,Assets.piratesShipImg.getWidth(),Assets.piratesShipImg.getHeight(),new Vector2(250, 0),0 );
       //  dynamicobjects = new Array<DynamicGameObject>();
         gameOver = new GameOver(0,0, width,height);//(10f,Gdx.graphics.getHeight()-20f,100,30);
@@ -111,6 +138,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
     }
     @Override
     public void render() {
+        ScreenUtils.clear(0,0.5f,0,1);
         if (gameScore.getShipHealth() > 0) {
             handleInput();
             update(Gdx.graphics.getDeltaTime());
@@ -119,14 +147,65 @@ public class MyGdxGame2 extends ApplicationAdapter {
                 resetGame();
             }
         }
+        camera.update();
+
+        // tell the SpriteBatch to render in the
+        // coordinate system specified by the camera
+        batch.setProjectionMatrix(camera.combined);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) debug = !debug;
+
+        if (debug) {
+            debugCameraController.handleDebugInput(Gdx.graphics.getDeltaTime());
+            memoryInfo.update();
+        }
+
 
         batch.begin();
         draw();
+        batch.end();
+        if (debug) {
+            debugCameraController.applyTo(camera);
+            batch.begin();
+            {
+                // the average number of frames per second
+                GlyphLayout layout = new GlyphLayout(Assets.font, "FPS:" + Gdx.graphics.getFramesPerSecond());
+                Assets.font.setColor(Color.YELLOW);
+                Assets.font.draw(batch, layout, Gdx.graphics.getWidth() - layout.width, Gdx.graphics.getHeight() - 50);
+
+                // number of rendering calls, ever; will not be reset unless set manually
+                Assets.font.setColor(Color.YELLOW);
+                Assets.font.draw(batch, "RC:" + batch.totalRenderCalls, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() - 20);
+
+                memoryInfo.render(batch, Assets.font);
+            }
+            batch.end();
+
+            batch.totalRenderCalls = 0;
+            ViewportUtils.drawGrid(viewport, shapeRenderer, 50);
+
+            // print rectangles
+            shapeRenderer.setProjectionMatrix(camera.combined);
+            // https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/graphics/glutils/ShapeRenderer.html
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            {
+                shapeRenderer.setColor(1, 1, 0, 1);
+                for (Rock rock1 : activeRocks ) {
+                    shapeRenderer.rect(rock1.position.x, rock1.position.y, rock1.bounds.getWidth(),rock1.bounds.getHeight());
+                }
+                for (Treasure treasure1 : activeTreasures ) {
+                    shapeRenderer.rect(treasure1.position.x, treasure1.position.y, treasure1.bounds.getWidth(),treasure1.bounds.getHeight());
+                }
+                shapeRenderer.rect(pirateShip.position.x, pirateShip.position.y, pirateShip.bounds.getWidth(), pirateShip.bounds.getHeight());
+            }
+            shapeRenderer.end();
+        }
         if (isGamePaused) {
+            batch.begin();
             drawPauseScreen();
+            batch.end();
         }
 
-        batch.end();
+
     }
 
     private void drawPauseScreen() {
