@@ -3,6 +3,7 @@ package com.mygdx2;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.utils.Pools;
 
 public class Treasure  extends DynamicGameObject implements Pool.Poolable{
     public boolean alive;
+    private ParticleEffect particleEffect;
     private static final int TREASURE_SPAWN_TIME = 4;
 
    /*public Treasure(float x, float y, float width, float height, Vector2 velocity, long createTime) {
@@ -22,6 +24,9 @@ public class Treasure  extends DynamicGameObject implements Pool.Poolable{
             Pools.get(Treasure.class, 5);
     public Treasure() {
         alive = false;
+        particleEffect = new ParticleEffect();
+        particleEffect.load(Gdx.files.internal("particles/treasure3.pe"),Gdx.files.internal("particles"));
+
 
     }
 
@@ -45,6 +50,7 @@ public class Treasure  extends DynamicGameObject implements Pool.Poolable{
     @Override
     public void render(SpriteBatch batch) {
         batch.draw(Assets.treasureImg, position.x, position.y, bounds.width, bounds.height);
+        particleEffect.draw(batch);
     }
     public Rectangle rectangleBounds(){
         return new Rectangle(position.x,position.y,bounds.width,bounds.height);
@@ -60,6 +66,11 @@ public class Treasure  extends DynamicGameObject implements Pool.Poolable{
         position.y -= velocity.y * deltaTime;
         if(!isOutOfScreen()){
             alive = false;
+        }
+        particleEffect.setPosition(position.x + bounds.width / 2, position.y + bounds.height / 2);
+        particleEffect.update(deltaTime);
+        if (particleEffect.isComplete()) {
+            particleEffect.reset();
         }
     }
 

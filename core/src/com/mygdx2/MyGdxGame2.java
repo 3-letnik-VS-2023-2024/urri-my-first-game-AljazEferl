@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx2.debug.DebugCameraController;
 import com.mygdx2.debug.MemoryInfo;
 import com.mygdx2.util.ViewportUtils;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import java.util.Iterator;
 
 public class MyGdxGame2 extends ApplicationAdapter {
@@ -64,6 +65,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
     public Viewport viewport;
 
 
+
     @Override
     public void create() {
         camera = new OrthographicCamera();
@@ -83,6 +85,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 
 
+        Assets.particleEffect.flipY();
 
         pirateShip = new PirateShip(Gdx.graphics.getWidth() / 2f - Assets.piratesShipImg.getWidth() / 2f, 20f,Assets.piratesShipImg.getWidth(),Assets.piratesShipImg.getHeight(),new Vector2(250, 0),0 );
       //  dynamicobjects = new Array<DynamicGameObject>();
@@ -90,6 +93,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
         gameScore = new GameScore(0,0, width,height, 0, 100,0);
         spawnTreasure();
         spawnRock();
+
 
     }
     private void spawnTreasure() {
@@ -195,6 +199,12 @@ public class MyGdxGame2 extends ApplicationAdapter {
                 for (Treasure treasure1 : activeTreasures ) {
                     shapeRenderer.rect(treasure1.position.x, treasure1.position.y, treasure1.bounds.getWidth(),treasure1.bounds.getHeight());
                 }
+                for (Shield shield1 : activeShield ) {
+                    shapeRenderer.rect(shield1.position.x, shield1.position.y, shield1.bounds.getWidth(),shield1.bounds.getHeight());
+                }
+                for (Ammo ammo1 : pirateShip.getAmmoList() ) {
+                    shapeRenderer.rect(ammo1.position.x, ammo1.position.y, ammo1.bounds.getWidth(),ammo1.bounds.getHeight());
+                }
                 shapeRenderer.rect(pirateShip.position.x, pirateShip.position.y, pirateShip.bounds.getWidth(), pirateShip.bounds.getHeight());
             }
             shapeRenderer.end();
@@ -217,10 +227,16 @@ public class MyGdxGame2 extends ApplicationAdapter {
 
 
     public void update(float delta) {
+        Assets.particleEffect.update(delta);
+        Assets.particleEffect.setPosition(pirateShip.position.x + Assets.piratesShipImg.getWidth()/2, pirateShip.position.y + 5);
 
         if (isGamePaused) {
             return;
         }
+        if (Assets.particleEffect.isComplete()){
+                Assets.particleEffect.reset();
+        }
+
 
         timeSinceLastTreasureSpawn += delta;
         if (timeSinceLastTreasureSpawn >= TREASURE_SPAWN_INTERVAL) {
@@ -351,6 +367,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
 
     public void draw(){
         batch.draw(Assets.background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Assets.particleEffect.draw(batch);
         if(gameScore.getShipHealth() <= 0){
             gameOver.render(batch);
             return;
@@ -361,6 +378,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
         }
 
         for(Treasure pool : activeTreasures){
+            pool.update(Gdx.graphics.getDeltaTime());
             pool.render(batch);
         }
         for(Rock pool : activeRocks){

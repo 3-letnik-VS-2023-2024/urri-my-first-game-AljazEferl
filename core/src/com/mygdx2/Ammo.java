@@ -1,6 +1,7 @@
 package com.mygdx2;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -39,6 +40,7 @@ public class Ammo  extends DynamicGameObject implements  Pool.Poolable{
         if(!isOutOfScreen()){
             alive = false;
         }
+
     }
     public boolean isAlive() {
         return alive;

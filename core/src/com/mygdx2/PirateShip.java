@@ -56,7 +56,12 @@ public class PirateShip extends DynamicGameObject {
         //   super.render(batch);
         batch.draw(Assets.piratesShipImg, position.x, position.y, bounds.width, bounds.height);
     }
-
+    public float getX(){
+        return  position.x;
+    }
+    public float getY(){
+        return position.y;
+    }
     public Rectangle rectangleBounds() {
         return new Rectangle(position.x, position.y, bounds.width, bounds.height);
     }
@@ -80,7 +85,7 @@ public class PirateShip extends DynamicGameObject {
            // Ammo ammo = new Ammo(position.x + bounds.width / 2 - Assets.ammoImg.getWidth() / 4, position.y + bounds.height, Assets.ammoImg.getWidth(), Assets.ammoImg.getHeight(), new Vector2(0, AMMO_SPEED), TimeUtils.nanoTime());
             //ammoList.add(ammo);
             Ammo ammo = Ammo.POOL_AMMO.obtain();
-            ammo.init(position.x + bounds.width / 2 - Assets.ammoImg.getWidth() / 4,
+            ammo.init(position.x + bounds.width / 2 - Assets.ammoImg.getWidth() / 2,
                     position.y + bounds.height,
                     Assets.ammoImg.getWidth(), Assets.ammoImg.getHeight(),
                     new Vector2(0, AMMO_SPEED), TimeUtils.nanoTime());
