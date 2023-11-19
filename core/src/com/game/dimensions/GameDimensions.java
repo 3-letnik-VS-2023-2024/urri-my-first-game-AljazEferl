@@ -65,7 +65,10 @@ public class GameDimensions extends ApplicationAdapter {
 	private float worldUnitX;
 
 	private float worldUnitY;
-
+	int screenWidth ;
+	int screenHeight  ;
+	float worldWidth;
+	float worldHeight;
 
 	@Override
 	public void create () {
@@ -89,8 +92,11 @@ public class GameDimensions extends ApplicationAdapter {
 		pirateShip = new Rectangle();
 		pirateShip.x = (/*Gdx.graphics.getWidth()*/WORLD_WIDTH / 2f - piratesShipImg.getWidth() / 2f);
 		pirateShip.y = 20f;
-		pirateShip.width = piratesShipImg.getWidth();
-		pirateShip.height = piratesShipImg.getHeight();
+		pirateShip.width = piratesShipImg.getWidth()/(Gdx.graphics.getWidth()/fitViewport.getWorldWidth());
+		//System.out.println("Pirate Ship Width: " + pirateShip.width);
+
+
+		pirateShip.height = piratesShipImg.getHeight()/(Gdx.graphics.getHeight()/ fitViewport.getWorldHeight());
 
 		treasures = new Array<>();
 		treasureCollected = 0;
@@ -129,10 +135,11 @@ public class GameDimensions extends ApplicationAdapter {
 	}
 
 	private void drawHud() {
-		int screenWidth = Gdx.graphics.getWidth();
-		int screenHeight = Gdx.graphics.getHeight();
-		float worldWidth = fitViewport.getWorldWidth();
-		float worldHeight = fitViewport.getWorldHeight();
+
+		screenWidth = Gdx.graphics.getWidth();
+		 screenHeight = Gdx.graphics.getHeight();
+		worldWidth = fitViewport.getWorldWidth();
+		 worldHeight = fitViewport.getWorldHeight();
 
 		String screenSize = "Screen/Window size: " + screenWidth + " x " + screenHeight + " px";
 		String worldSize = "World size: " + (int) worldWidth + " x " + (int) worldHeight + " world units";
@@ -158,6 +165,10 @@ public class GameDimensions extends ApplicationAdapter {
 	public void resize(int width, int height) {
 		fitViewport.update(width, height,true);
 		hudViewport.update(width, height, true);
+		pirateShip.width = piratesShipImg.getWidth()/(Gdx.graphics.getWidth()/fitViewport.getWorldWidth());
+		pirateShip.height = piratesShipImg.getHeight()/(Gdx.graphics.getHeight()/ fitViewport.getWorldHeight());
+		System.out.println("Pirate Ship Width: " + pirateShip.width);
+
 	}
 	private void handleInput() {
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) moveLeft(Gdx.graphics.getDeltaTime());
@@ -174,8 +185,8 @@ public class GameDimensions extends ApplicationAdapter {
 	}
 	private void moveRight(float delta){
 		pirateShip.x += PIRATE_SHIP_SPEED * delta;
-		if(pirateShip.x> WORLD_WIDTH/*Gdx.graphics.getWidth()*/ - piratesShipImg.getWidth()){
-			pirateShip.x = WORLD_WIDTH/*Gdx.graphics.getWidth()*/-piratesShipImg.getWidth();
+		if(pirateShip.x>= fitViewport.getWorldWidth()-pirateShip.getWidth()/*Gdx.graphics.getWidth()*/ ){
+			pirateShip.x = fitViewport.getWorldWidth()-pirateShip.getWidth()/*Gdx.graphics.getWidth()*/;
 		}
 	}
 	private void update(float delta) {
@@ -223,15 +234,16 @@ public class GameDimensions extends ApplicationAdapter {
 		}
 		batch.draw(background, 0, 0, WORLD_WIDTH,WORLD_HEIGHT/*Gdx.graphics.getWidth(), Gdx.graphics.getHeight()*/);
 		for (Rectangle treasure : treasures) {
-			batch.draw(treasureImg, treasure.x, treasure.y);
+			batch.draw(treasureImg, treasure.x, treasure.y,treasure.width,treasure.height);
 		}
 		for (Rectangle rock : rocks) {
-			batch.draw(rockImg, rock.x, rock.y);
+			batch.draw(rockImg, rock.x, rock.y,rock.width,rock.height);
 		}
 		for(Rectangle ammo : ammos){
-			batch.draw(ammoImg, ammo.x,ammo.y,32,32);
+			batch.draw(ammoImg, ammo.x,ammo.y,ammo.width,ammo.height);
 		}
-		batch.draw(piratesShipImg, pirateShip.x, pirateShip.y);
+		batch.draw(piratesShipImg, pirateShip.x, pirateShip.y, pirateShip.width, pirateShip.height);
+
 
 		font.setColor(Color.RED);
 		font.draw(batch,
@@ -254,12 +266,12 @@ public class GameDimensions extends ApplicationAdapter {
 		if (TimeUtils.timeSinceMillis((long) ammoshootTime) > AMMO_SHOOT_INTERVAL) {
 			Rectangle ammo = new Rectangle();
 
-			ammo.x = pirateShip.x + pirateShip.width / 2 - ammoImg.getWidth() / 2;
+			ammo.x = pirateShip.x + pirateShip.width / 2 - 6 ;
 
 			ammo.y = pirateShip.y + pirateShip.height;
 
-			ammo.width = ammoImg.getWidth();
-			ammo.height = ammoImg.getHeight();
+			ammo.width = ammoImg.getWidth()/(Gdx.graphics.getWidth()/fitViewport.getWorldWidth());
+			ammo.height = ammoImg.getHeight()/(Gdx.graphics.getHeight()/fitViewport.getWorldHeight());
 
 			ammos.add(ammo);
 		}
@@ -291,8 +303,8 @@ public class GameDimensions extends ApplicationAdapter {
 		Rectangle treasure = new Rectangle();
 		treasure.x = MathUtils.random(0f, WORLD_WIDTH/*Gdx.graphics.getWidth()*/ - treasureImg.getWidth());
 		treasure.y = WORLD_HEIGHT;//Gdx.graphics.getHeight();
-		treasure.width = treasureImg.getWidth();
-		treasure.height = treasureImg.getHeight();
+		treasure.width = treasureImg.getWidth()/(Gdx.graphics.getWidth()/fitViewport.getWorldWidth());
+		treasure.height = treasureImg.getHeight()/(Gdx.graphics.getHeight()/ fitViewport.getWorldHeight());
 		treasures.add(treasure);
 		treasureSpawnTime = TimeUtils.nanosToMillis(TimeUtils.nanoTime()) / 1000f;
 	}
@@ -300,8 +312,8 @@ public class GameDimensions extends ApplicationAdapter {
 		Rectangle rock = new Rectangle();
 		rock.x = MathUtils.random(0f, WORLD_WIDTH/*Gdx.graphics.getWidth()*/ - rockImg.getWidth());
 		rock.y = WORLD_HEIGHT;//Gdx.graphics.getHeight();
-		rock.width = rockImg.getWidth();
-		rock.height = rockImg.getHeight();
+		rock.width = rockImg.getWidth()/(Gdx.graphics.getWidth()/ fitViewport.getWorldWidth());
+		rock.height = rockImg.getHeight()/(Gdx.graphics.getHeight()/fitViewport.getWorldHeight());
 		rocks.add(rock);
 		rockSpawnTime = TimeUtils.nanosToMillis(TimeUtils.nanoTime()) / 1000f;
 	}

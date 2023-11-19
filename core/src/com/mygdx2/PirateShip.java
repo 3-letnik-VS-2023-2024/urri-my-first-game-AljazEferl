@@ -60,7 +60,7 @@ public class PirateShip extends DynamicGameObject {
         return  position.x;
     }
     public float getY(){
-        return position.y;
+        return position.y;   
     }
     public Rectangle rectangleBounds() {
         return new Rectangle(position.x, position.y, bounds.width, bounds.height);
