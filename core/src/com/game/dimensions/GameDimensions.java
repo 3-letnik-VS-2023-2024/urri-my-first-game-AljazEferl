@@ -88,7 +88,8 @@ public class GameDimensions extends ApplicationAdapter {
 		damageShip = Gdx.audio.newSound(Gdx.files.internal("sounds/damage.mp3"));
 
 		font = new BitmapFont(Gdx.files.internal("fonts/arial-32.fnt"));
-
+		worldUnitX = Gdx.graphics.getWidth()/fitViewport.getWorldWidth();
+		worldUnitY = Gdx.graphics.getHeight()/fitViewport.getWorldHeight();
 		pirateShip = new Rectangle();
 		pirateShip.x = (/*Gdx.graphics.getWidth()*/WORLD_WIDTH / 2f - piratesShipImg.getWidth() / 2f);
 		pirateShip.y = 20f;
@@ -165,9 +166,9 @@ public class GameDimensions extends ApplicationAdapter {
 	public void resize(int width, int height) {
 		fitViewport.update(width, height,true);
 		hudViewport.update(width, height, true);
-		pirateShip.width = piratesShipImg.getWidth()/(Gdx.graphics.getWidth()/fitViewport.getWorldWidth());
-		pirateShip.height = piratesShipImg.getHeight()/(Gdx.graphics.getHeight()/ fitViewport.getWorldHeight());
-		System.out.println("Pirate Ship Width: " + pirateShip.width);
+		//pirateShip.width = piratesShipImg.getWidth()/(Gdx.graphics.getWidth()/fitViewport.getWorldWidth());
+		//pirateShip.height = piratesShipImg.getHeight()/(Gdx.graphics.getHeight()/ fitViewport.getWorldHeight());
+		//System.out.println("Pirate Ship Width: " + pirateShip.width);
 
 	}
 	private void handleInput() {
