@@ -1,13 +1,16 @@
 package com.mygdx2;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import com.mygdx2.assets.RegionNames;
 
-public class Shield extends DynamicGameObject{
+public class Shield extends DynamicGameObject implements Pool.Poolable {
     public float rotate;
     public float rotateSpeed;
     public float duration;
@@ -24,7 +27,7 @@ public class Shield extends DynamicGameObject{
     public Shield() {
         alive = false;
     }
-    public void init(float x, float y, float width, float height, Vector2 velocity, long createTime,float rotate, float rotateSpeed,float duration){
+    public void init(float x, float y, float width, float height, Vector2 velocity, long createTime, float rotate, float rotateSpeed, float duration, TextureAtlas.AtlasRegion atlas){
         this.position = new Vector2(x,y);
         this.bounds = new Rectangle(x,y,width,height);
         this.velocity = velocity;
@@ -32,6 +35,7 @@ public class Shield extends DynamicGameObject{
         this.rotate = rotate;
         this.rotateSpeed = rotateSpeed;
         this.duration = duration;
+        this.atlas = atlas;
         alive = true;
     }
 
@@ -43,9 +47,13 @@ public class Shield extends DynamicGameObject{
     }
 
     @Override
+    public void reset() {
+        init(position.x,position.y, bounds.width, bounds.height, velocity,createTime,rotate,rotateSpeed,duration,atlas);
+    }
+
+    @Override
     public void render(SpriteBatch batch) {
-        TextureRegion textureRegion = new TextureRegion(Assets.powerUpImg);
-        batch.draw(textureRegion, position.x, position.y, bounds.width / 2, bounds.height / 2, bounds.width, bounds.height, 1, 1, rotate);
+        batch.draw(atlas, position.x, position.y, bounds.width / 2, bounds.height / 2, bounds.width, bounds.height, 1, 1, rotate);
     }
     public float getDuration(){
         return duration;

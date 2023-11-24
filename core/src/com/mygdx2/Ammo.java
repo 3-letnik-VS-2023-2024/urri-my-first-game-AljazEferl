@@ -1,20 +1,24 @@
 package com.mygdx2;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import com.mygdx2.assets.AssetPaths;
+import com.mygdx2.assets.RegionNames;
 
 public class Ammo  extends DynamicGameObject implements  Pool.Poolable{
- /*   public Ammo(float x, float y, float width, float height, Vector2 velocity, long createTime) {
-        super(x, y, width, height, velocity, createTime);
-    }*/
+    /*   public Ammo(float x, float y, float width, float height, Vector2 velocity, long createTime) {
+            super(x, y, width, height, velocity, createTime);
+        }*/
     public boolean alive;
+
     public static final Pool<Ammo> POOL_AMMO =
             Pools.get(Ammo.class, 20);
+
     @Override
     public void render(SpriteBatch batch) {
         //super.render(batch);
@@ -30,8 +34,10 @@ public class Ammo  extends DynamicGameObject implements  Pool.Poolable{
         this.bounds = new Rectangle(x,y,width,height);
         this.velocity = velocity;
         this.createTime = createTime;
+
         alive = true;
     }
+
     public void free(){POOL_AMMO.free(this);}
 
     @Override
@@ -42,6 +48,7 @@ public class Ammo  extends DynamicGameObject implements  Pool.Poolable{
         }
 
     }
+
     public boolean isAlive() {
         return alive;
     }

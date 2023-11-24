@@ -1,0 +1,62 @@
+
+gameplay.png
+size: 1024, 1024
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+ammo
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+background
+  rotate: false
+  xy: 2, 366
+  size: 1005, 610
+  orig: 1005, 610
+  offset: 0, 0
+  index: -1
+ball
+  rotate: false
+  xy: 2, 118
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+piratesShip
+  rotate: false
+  xy: 2, 220
+  size: 100, 144
+  orig: 100, 144
+  offset: 0, 0
+  index: -1
+rock
+  rotate: false
+  xy: 104, 202
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+rockBig
+  rotate: false
+  xy: 104, 264
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+shield
+  rotate: false
+  xy: 206, 304
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+treasure
+  rotate: false
+  xy: 2, 36
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1

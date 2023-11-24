@@ -114,21 +114,25 @@ public class GameDimensions extends ApplicationAdapter {
 	@Override
 	public void render () {
 		ScreenUtils.clear(Color.BLUE);
-		fitViewport.apply();
-		batch.setProjectionMatrix(camera.combined);
 
 		if (health > 0) {
 			handleInput();
 			update(Gdx.graphics.getDeltaTime());
 		}
 
-		hudViewport.apply();
-		batch.setProjectionMatrix(hudViewport.getCamera().combined);
+		fitViewport.apply();
+		batch.setProjectionMatrix(fitViewport.getCamera().combined);
 
 		batch.begin();
 
 		draw();
 
+		batch.end();
+
+		hudViewport.apply();
+		batch.setProjectionMatrix(hudViewport.getCamera().combined);
+
+		batch.begin();
 
 		drawHud();
 
@@ -223,7 +227,9 @@ public class GameDimensions extends ApplicationAdapter {
 			}
 		}
 	}
+
 	private void draw() {
+		//  font.getData().setScale((Gdx.graphics.getWidth()/fitViewport.getWorldWidth())/10,(Gdx.graphics.getHeight()/fitViewport.getWorldHeight())/10);
 		if (health <= 0) {
 			batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			font.setColor(Color.BLUE);

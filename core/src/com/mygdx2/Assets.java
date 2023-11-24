@@ -26,8 +26,8 @@ public class Assets{
     }
 
     public static void load () {
-        background = loadTexture("images/background2.png");
-        piratesShipImg = loadTexture("images/piratesShip.png");
+        background = loadTexture("images/background.png");
+       // piratesShipImg = loadTexture("images/piratesShip.png");
         rockImg = loadTexture("images/rock.png");
         treasureImg = loadTexture("images/treasure.png");
         ammoImg = loadTexture("images/ammo.png");
@@ -37,8 +37,8 @@ public class Assets{
         damageShip = Gdx.audio.newSound(Gdx.files.internal("sounds/damage.mp3"));
         particleEffect = new ParticleEffect();
         particleEffect.load(Gdx.files.internal("particles/water.pe"),Gdx.files.internal("particles"));
-       // particleEffect1 = new ParticleEffect();
-       // particleEffect1.load(Gdx.files.internal("particles/fire.pe"),Gdx.files.internal("particles"));
+        //particleEffect1 = new ParticleEffect();
+        //particleEffect1.load(Gdx.files.internal("particles/fire.pe"),Gdx.files.internal("particles"));
 
     }
 

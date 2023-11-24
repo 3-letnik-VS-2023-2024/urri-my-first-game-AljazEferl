@@ -3,6 +3,7 @@ package com.mygdx2;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -25,11 +26,12 @@ public class Rock extends DynamicGameObject implements Pool.Poolable {
         return new Rectangle(position.x,position.y,bounds.width,bounds.height);
 
     }
-    public void init(float x, float y, float width, float height, Vector2 velocity, long createTime){
+    public void init(float x, float y, float width, float height, Vector2 velocity, long createTime, TextureAtlas.AtlasRegion atlas){
         this.position = new Vector2(x,y);
         this.bounds = new Rectangle(x,y,width,height);
         this.velocity = velocity;
         this.createTime = createTime;
+        this.atlas = atlas;
         alive = true;
     }
     public void free(){POOL_ROCK.free(this);}
@@ -37,7 +39,7 @@ public class Rock extends DynamicGameObject implements Pool.Poolable {
     @Override
     public void render(SpriteBatch batch) {
     //    super.render(batch);
-        batch.draw(Assets.rockImg, position.x, position.y, bounds.width, bounds.height);
+        batch.draw(atlas, position.x, position.y, bounds.width, bounds.height);
     }
     @Override
     public void update(float deltaTime) {
@@ -57,6 +59,6 @@ public class Rock extends DynamicGameObject implements Pool.Poolable {
 
     @Override
     public void reset() {
-        init(MathUtils.random(0f, Gdx.graphics.getWidth() - Assets.rockImg.getWidth()),Gdx.graphics.getHeight(),Assets.rockImg.getWidth(),Assets.rockImg.getHeight(),new Vector2(0f, 150f),ROCK_SPAWN_TIME);
+        init(MathUtils.random(0f, Gdx.graphics.getWidth() - Assets.rockImg.getWidth()),Gdx.graphics.getHeight(),Assets.rockImg.getWidth(),Assets.rockImg.getHeight(),new Vector2(0f, 150f),ROCK_SPAWN_TIME,atlas);
     }
 }
