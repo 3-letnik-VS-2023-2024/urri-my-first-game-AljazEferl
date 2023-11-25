@@ -28,20 +28,21 @@ public class Treasure  extends DynamicGameObject implements Pool.Poolable{
     public static final Pool<Treasure> POOL_TREASURE =
             Pools.get(Treasure.class, 5);
     public Treasure() {
-       particleEffect = new ParticleEffect();
-       particleEffect.load(Gdx.files.internal("particles/treasure3.pe"),Gdx.files.internal("particles"));
+      // particleEffect = new ParticleEffect();
+      // particleEffect.load(Gdx.files.internal("particles/treasure3.pe"),Gdx.files.internal("particles"));
         alive = false;
 
 
     }
 
 
-    public void init(float x, float y, float width, float height, Vector2 velocity, long createTime, TextureAtlas.AtlasRegion atlas){
+    public void init(float x, float y, float width, float height, Vector2 velocity, long createTime, TextureAtlas.AtlasRegion atlas,ParticleEffect particleEffect){
         this.position = new Vector2(x,y);
         this.bounds = new Rectangle(x,y,width,height);
         this.velocity = velocity;
         this.createTime = createTime;
         this.atlas = atlas;
+        this.particleEffect = particleEffect;
         alive = true;
     }
     public void free(){POOL_TREASURE.free(this);}
@@ -50,7 +51,7 @@ public class Treasure  extends DynamicGameObject implements Pool.Poolable{
     public void reset() {
 
       //init(MathUtils.random(0f, Gdx.graphics.getWidth() - Assets.treasureImg.getWidth()),Gdx.graphics.getHeight(),Assets.treasureImg.getWidth(),Assets.treasureImg.getHeight(),new Vector2(0f, 100f),TREASURE_SPAWN_TIME);
-        init(MathUtils.random(0f, Gdx.graphics.getWidth() - atlas.getRegionWidth()),Gdx.graphics.getHeight(),atlas.getRegionWidth(),atlas.getRegionHeight(),new Vector2(0f, 100f),TREASURE_SPAWN_TIME,atlas);
+        init(MathUtils.random(0f, Gdx.graphics.getWidth() - atlas.getRegionWidth()),Gdx.graphics.getHeight(),atlas.getRegionWidth(),atlas.getRegionHeight(),new Vector2(0f, 100f),TREASURE_SPAWN_TIME,atlas,particleEffect);
 
     }
 

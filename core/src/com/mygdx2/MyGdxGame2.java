@@ -147,7 +147,7 @@ public class MyGdxGame2 extends ApplicationAdapter {
     private void spawnTreasure() {
        // dynamicobjects.add(new Treasure(MathUtils.random(0f, Gdx.graphics.getWidth() - Assets.treasureImg.getWidth()),Gdx.graphics.getHeight(),Assets.treasureImg.getWidth(),Assets.treasureImg.getHeight(),new Vector2(0f, 100f),TREASURE_SPAWN_TIME));
         Treasure item = Treasure.POOL_TREASURE.obtain();
-        item.init(MathUtils.random(0f, Gdx.graphics.getWidth() - gameplayAtlas.findRegion(RegionNames.TREASURE).getRegionWidth()),Gdx.graphics.getHeight(),gameplayAtlas.findRegion(RegionNames.TREASURE).getRegionWidth(),gameplayAtlas.findRegion(RegionNames.TREASURE).getRegionHeight(),new Vector2(0f, 100f),TREASURE_SPAWN_TIME,gameplayAtlas.findRegion(RegionNames.TREASURE));
+        item.init(MathUtils.random(0f, Gdx.graphics.getWidth() - gameplayAtlas.findRegion(RegionNames.TREASURE).getRegionWidth()),Gdx.graphics.getHeight(),gameplayAtlas.findRegion(RegionNames.TREASURE).getRegionWidth(),gameplayAtlas.findRegion(RegionNames.TREASURE).getRegionHeight(),new Vector2(0f, 100f),TREASURE_SPAWN_TIME,gameplayAtlas.findRegion(RegionNames.TREASURE),fireParticleEffect);
         activeTreasures.add(item);
 
     }
